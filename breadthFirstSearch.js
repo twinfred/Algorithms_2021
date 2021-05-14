@@ -20,85 +20,59 @@ const gameBoard = [
   [0,0,2,0,0,0],
 ];
 
-function findShortestPath(gameBoard, start, end) {
-  // [1,1] -> [0,1] = move up -- first number (gameBoard[-1, x]) gets smaller
-  // [1,0] -> [1,1] = move right -- second number (gameBoard[y, +1]) gets bigger
-  // [0,1] -> [1,1] = move down -- first number (gameBoard[+1, x]) gets bigger
-  // [1,1] -> [1,0] = move right -- second number (gameBoard[y, -1]) gets smaller
+const adjacentSpacesGraph = {};
+
+function createMapHashGraph(gameBoard, start) {
   const queue = [start];
   const alreadyChecked = [];
 
   while(queue.length) {
     const currentSpace = queue.shift();
-    const roadSpaces = [];
+    const adjacentSpaces = [];
 
     const alreadyCheckedString = JSON.stringify(alreadyChecked);
     const currentSpaceString = JSON.stringify(currentSpace);
 
     if(!alreadyCheckedString.includes(currentSpaceString)) {
       if(currentSpace[0] - 1 >= 0) {
-        console.log('space above being checked...');
-        const topValue = gameBoard[currentSpace[0] - 1][currentSpace[1]];
-        const topSpace = [currentSpace[0] - 1, currentSpace[1]]
+        // console.log('space above being checked...');
+        const value = gameBoard[currentSpace[0] - 1][currentSpace[1]];
 
-        if(topValue === 1) {
-          roadSpaces.push([currentSpace[0] - 1, currentSpace[1]]);
-        }
-
-        if(JSON.stringify(topSpace) === JSON.stringify(end)) {
-          console.log('final space found!', topSpace);
-          return;
+        if(value === 1 || value === 2) {
+          adjacentSpaces.push([currentSpace[0] - 1, currentSpace[1]]);
         }
       } 
       
       if(currentSpace[1] + 1 < gameBoard.length) {
-        console.log('space to the right being checked...');
-        const rightValue = gameBoard[currentSpace[0]][currentSpace[1] + 1];
-        const rightSpace = [currentSpace[0], currentSpace[1] + 1];
+        // console.log('space to the right being checked...');
+        const value = gameBoard[currentSpace[0]][currentSpace[1] + 1];
 
-        if(rightValue === 1) {
-          roadSpaces.push([currentSpace[0], currentSpace[1] + 1]);
-        }
-
-        if(JSON.stringify(rightSpace) === JSON.stringify(end)) {
-          console.log('final space found!', rightSpace);
-          return;
+        if(value === 1 || value === 2) {
+          adjacentSpaces.push([currentSpace[0], currentSpace[1] + 1]);
         }
       }
 
       if(currentSpace[0] + 1 < gameBoard.length) {
-        console.log('space below being checked...');
-        const bottomValue = gameBoard[currentSpace[0] + 1][currentSpace[1]];
-        const bottomSpace = [currentSpace[0] + 1, currentSpace[1]];
+        // console.log('space below being checked...');
+        const value = gameBoard[currentSpace[0] + 1][currentSpace[1]];
 
-        if(bottomValue === 1) {
-          roadSpaces.push([currentSpace[0] + 1, currentSpace[1]]);
-        }
-
-        if(JSON.stringify(bottomSpace) === JSON.stringify(end)) {
-          console.log('final space found!', bottomSpace);
-          return;
+        if(value === 1 || value === 2) {
+          adjacentSpaces.push([currentSpace[0] + 1, currentSpace[1]]);
         }
       }
 
       if(currentSpace[1] - 1 >= 0) {
-        console.log('space to the left being checked...');
-        const leftValue = gameBoard[currentSpace[0]][currentSpace[1] - 1];
-        const leftSpace = [currentSpace[0], currentSpace[1] - 1];
+        // console.log('space to the left being checked...');
+        const value = gameBoard[currentSpace[0]][currentSpace[1] - 1];
 
-        if(leftValue === 1){
-          roadSpaces.push([currentSpace[0], currentSpace[1] - 1]);
-        }
-
-        if(JSON.stringify(leftSpace) === JSON.stringify(end)) {
-          console.log('final space found!', leftSpace);
-          return;
+        if(value === 1 || value === 2){
+          adjacentSpaces.push([currentSpace[0], currentSpace[1] - 1]);
         }
       }
 
       const queueString = JSON.stringify(queue);
 
-      roadSpaces.forEach(space => {
+      adjacentSpaces.forEach(space => {
         const spaceString = JSON.stringify(space);
         if (!queueString.includes(spaceString)) {
           queue.push(space);
@@ -106,10 +80,14 @@ function findShortestPath(gameBoard, start, end) {
       });
 
       alreadyChecked.push(currentSpace);
+
+      adjacentSpacesGraph[currentSpaceString] = adjacentSpaces;
     }
   }
+
+  console.log(adjacentSpacesGraph);
 }
 
-findShortestPath(gameBoard, [0,1], [5,2]);
+createMapHashGraph(gameBoard, [0,1]);
 
-// TODO: Find the sho
+// findShortestPath(gameBoard, [0,1], [5,2]);
