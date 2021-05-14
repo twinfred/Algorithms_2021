@@ -20,10 +20,9 @@ const gameBoard = [
   [0,0,2,0,0,0],
 ];
 
-const adjacentSpacesGraph = {};
-
-function createMapHashGraph(gameBoard, start) {
-  const queue = [start];
+function createMapHashGraph(gameBoard, startSpace) {
+  const hashGraph = {};
+  const queue = [startSpace];
   const alreadyChecked = [];
 
   while(queue.length) {
@@ -81,13 +80,36 @@ function createMapHashGraph(gameBoard, start) {
 
       alreadyChecked.push(currentSpace);
 
-      adjacentSpacesGraph[currentSpaceString] = adjacentSpaces;
+      hashGraph[currentSpaceString] = adjacentSpaces;
     }
   }
 
-  console.log(adjacentSpacesGraph);
+  return hashGraph;
 }
 
-createMapHashGraph(gameBoard, [0,1]);
+function findShortestPath(gameBoard, startSpace, endSpace) {
+  const gameBoardHashGraph = createMapHashGraph(gameBoard, startSpace);
+  console.log(gameBoardHashGraph);
 
-// findShortestPath(gameBoard, [0,1], [5,2]);
+  const queue = [startSpace];
+  const alreadyChecked = [];
+  const endSpaceString = JSON.stringify(endSpace);
+
+  // while(queue) {
+    const currentSpace = queue.shift();
+    const currentSpaceString = JSON.stringify(currentSpace);
+    const alreadyCheckedString = JSON.stringify(alreadyChecked);
+
+    if(!alreadyCheckedString.includes(currentSpaceString)) {
+      if(currentSpaceString === endSpaceString) {
+        console.log('made it out alive!');
+        return;
+      }
+
+      queue.push(gameBoardHashGraph[currentSpace]);
+      alreadyChecked.push(currentSpace);
+    }
+  // }
+}
+
+findShortestPath(gameBoard, [0,1], [5,2]);
