@@ -90,33 +90,16 @@ function findShortestPath(gameBoard, startSpace, endSpace) {
         gameBoardMap.start = mapNode;
       }
 
-      if (mapNode.top && gameBoard[mapNode.top[0]][mapNode.top[1]]) {
-        parentMap[JSON.stringify(mapNode.top)] = mapNode;
-        if (!alreadyChecked.includes(JSON.stringify(mapNode.top))) {
-          queue.push(mapNode.top);
-        }
-      }
+      const possibleDirections = [mapNode.top, mapNode.right, mapNode.bottom, mapNode.left];
 
-      if (mapNode.right && gameBoard[mapNode.right[0]][mapNode.right[1]]) {
-        parentMap[JSON.stringify(mapNode.right)] = mapNode;
-        if (!alreadyChecked.includes(JSON.stringify(mapNode.right))) {
-          queue.push(mapNode.right);
+      possibleDirections.forEach(direction => {
+        if (direction && gameBoard[direction[0]][direction[1]]) {
+          parentMap[JSON.stringify(direction)] = mapNode;
+          if (!alreadyChecked.includes(JSON.stringify(direction))) {
+            queue.push(direction);
+          }
         }
-      }
-
-      if (mapNode.bottom && gameBoard[mapNode.bottom[0]][mapNode.bottom[1]]) {
-        parentMap[JSON.stringify(mapNode.bottom)] = mapNode;
-        if (!alreadyChecked.includes(JSON.stringify(mapNode.bottom))) {
-          queue.push(mapNode.bottom);
-        }
-      }
-
-      if (mapNode.left && gameBoard[mapNode.left[0]][mapNode.left[1]]) {
-        parentMap[JSON.stringify(mapNode.left)] = mapNode;
-        if (!alreadyChecked.includes(JSON.stringify(mapNode.left))) {
-          queue.push(mapNode.left);
-        }
-      }
+      });
   
       alreadyChecked.push(currentSpaceString);
     }
